@@ -2,8 +2,8 @@ version: "3"
 services: 
   cybersecbooster:
     build: 
-      context: ../../
-      dockerfile: Bc.CyberSec.Detection.Booster.Api/src/Dockerfile
+      context: ..
+      dockerfile: Bc.CyberSec.Detection.Booster.Api/Dockerfile
     environment:
       API_ACCESS_KEY: ${API_ACCESS_KEY}
       SYSLOG_NG_CONFIG_DIR: ${SYSLOG_NG_CONFIG_DIR}
@@ -13,10 +13,11 @@ services:
       MONGO_CONNECTION_STRING: ${MONGO_CONNECTION_STRING}
     ports: 
       - "5000:80"   
-    volumes:
-      - syslog-ng-filter:/uc-filters-definition.conf
+    # volumes:
+    #   - syslog-ng-filter:/uc-filters-definition.conf
   mongodb:
     image: mongo:latest
+    user: root
     environment:
         MONGO_INITDB_ROOT_USERNAME: root
         MONGO_INITDB_ROOT_PASSWORD: password

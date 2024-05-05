@@ -34,11 +34,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapPut("/uc/activate/{id}", (string id, IUseCaseHandlerService useCaseHandlerService) =>
+app.MapPut("/uc/activate/{id}", (int id, IUseCaseHandlerService useCaseHandlerService) =>
 {
     try
     {
-        useCaseHandlerService.Activate(id);
+        useCaseHandlerService.Activate($"UC{id}");
         return Results.Ok();
     }
     catch (ApplicationException e)
@@ -50,11 +50,12 @@ app.MapPut("/uc/activate/{id}", (string id, IUseCaseHandlerService useCaseHandle
 .WithOpenApi()
 .RequireAuthorization();
 
-app.MapPut("/uc/deactivate/{id}", (string id, IUseCaseHandlerService useCaseHandlerService) =>
+app.MapPut("/uc/deactivate/{id}", (int id, IUseCaseHandlerService useCaseHandlerService) =>
 {
     try
     {
-        useCaseHandlerService.Deactivate(id);
+
+        useCaseHandlerService.Deactivate($"UC{id}");
         return Results.Ok();
     }
     catch (ApplicationException e)
