@@ -3,5 +3,5 @@
 public abstract class CollectionRoot
 {
     public Guid Id { get; set; }
-    public string Identifier { get; set; }
+    public string UseCaseIdentitifier { get; set; }
 }

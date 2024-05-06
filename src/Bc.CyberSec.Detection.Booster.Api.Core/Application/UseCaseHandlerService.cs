@@ -29,21 +29,21 @@ public class UseCaseHandlerService: IUseCaseHandlerService
     {
         await _useCaseSerializerService.UpdateUseCaseState(identifier, true);
         var id = (await _useCaseSerializerService.GetUseCases())
-            .Where(uc => uc.Identifier == identifier)
-            .Select(uc => uc.RuleId).First();
+            .Where(uc => uc.UseCaseIdentitifier == identifier)
+            .Select(uc => uc.KibanaRuleId).First();
 
         await _syslogNgUseCaseService.Handle();
-        await _kibanaUseCaseService.Activate(id.Value);
+        await _kibanaUseCaseService.Activate(id);
     }
 
     public async Task Deactivate(string identifier)
     {
         await _useCaseSerializerService.UpdateUseCaseState(identifier, false);
         var id = (await _useCaseSerializerService.GetUseCases())
-            .Where(uc => uc.Identifier == identifier)
-            .Select(uc => uc.RuleId).First();
+            .Where(uc => uc.UseCaseIdentitifier == identifier)
+            .Select(uc => uc.KibanaRuleId).First();
 
         await _syslogNgUseCaseService.Handle();
-        await _kibanaUseCaseService.Deactivate(id.Value);
+        await _kibanaUseCaseService.Deactivate(id);
     }
 }

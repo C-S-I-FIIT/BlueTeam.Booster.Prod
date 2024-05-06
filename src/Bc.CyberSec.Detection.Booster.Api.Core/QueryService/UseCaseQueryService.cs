@@ -14,6 +14,7 @@ public interface IUseCaseQueryService
 public class UseCaseQueryService : IUseCaseQueryService
 {
     private IMongoCollection<UseCase> _context;
+    
     public UseCaseQueryService(IMongoDatabase database)
     {
         _context = database.GetCollection<UseCase>(DbCollection.UseCase);
@@ -36,10 +37,10 @@ public class UseCaseQueryService : IUseCaseQueryService
     {
         return useCases.Select(x => new UseCaseGetDto()
         {
-            Identifier = x.Identifier,
+            UseCaseIdentifier = x.UseCaseIdentitifier,
             Name = x.Name,
             Mnemonics = x.Mnemonics,
-            RuleId = x.RuleId,
+            KibanaRuleId = x.KibanaRuleId,
             MitreAttackId = x.MitreAttackId
         }).ToList();
     }

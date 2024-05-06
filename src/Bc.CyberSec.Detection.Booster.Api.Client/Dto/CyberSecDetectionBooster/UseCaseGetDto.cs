@@ -8,10 +8,10 @@ public class UseCaseGetDto
     public List<string>? Mnemonics { get; set; }
 
     [JsonPropertyName("ruleId")]
-    public Guid? RuleId { get; set; }
+    public Guid? KibanaRuleId { get; set; }
 
     [JsonPropertyName("id")]
-    public string? Identifier { get; set; }
+    public string? UseCaseIdentifier { get; set; }
 
     [JsonPropertyName("mitreAttackId")]
     public string MitreAttackId { get; set; }

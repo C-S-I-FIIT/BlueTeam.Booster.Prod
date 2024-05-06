@@ -18,13 +18,13 @@ public interface IUseCaseSerializerService
 
 public class UseCaseSerializerService : IUseCaseSerializerService
 {
-    private CoreContext _context;
+    private DbContext _context;
     private readonly string _cacheObjectsKey = "cachedUseCases";
     private readonly string _cacheWhenKey = "cached";
     private readonly IMemoryCache _cache;
     private readonly IUseCaseQueryService _queryService;
 
-    public UseCaseSerializerService(IMemoryCache cache, CoreContext context, IUseCaseQueryService queryService)
+    public UseCaseSerializerService(IMemoryCache cache, DbContext context, IUseCaseQueryService queryService)
     {
         _cache = cache;
         _context = context;
@@ -52,6 +52,8 @@ public class UseCaseSerializerService : IUseCaseSerializerService
 
     public async Task Save(List<UseCase> useCases)
     {
+        await _context.UseCases.RemoveAllUseCase();
+
         foreach (var useCase in useCases)
         {
             await _context.UseCases.UpdateAsync(useCase);
@@ -64,7 +66,7 @@ public class UseCaseSerializerService : IUseCaseSerializerService
 
         foreach (var useCase in cachedUc)
         {
-            if (useCase.Identifier.Equals(id))
+            if (useCase.UseCaseIdentitifier.Equals(id))
             {
                 useCase.IsActive = state;
                 await _context.UseCases.UpdateAsync(useCase);
@@ -86,8 +88,8 @@ public class UseCaseSerializerService : IUseCaseSerializerService
         {
             Mnemonics = ucDto.Mnemonics,
             Id = Guid.NewGuid(),
-            Identifier = ucDto.Identifier,
-            RuleId = string.IsNullOrEmpty(ucDto.RuleId) ? Guid.Empty : new Guid(ucDto.RuleId),
+            UseCaseIdentitifier = ucDto.UseCaseIdentifier,
+            KibanaRuleId = string.IsNullOrEmpty(ucDto.KibanaRuleId) ? Guid.Empty : new Guid(ucDto.KibanaRuleId),
             IsActive = false,
             Name = ucDto.Name,
             MitreAttackId = ucDto.MitreAttackId

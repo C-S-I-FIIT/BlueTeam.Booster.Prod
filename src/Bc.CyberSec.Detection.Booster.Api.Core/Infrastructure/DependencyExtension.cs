@@ -49,7 +49,7 @@ public static class DependencyExtension
             Environment.GetEnvironmentVariable("KIBANA_URL") ?? configuration["KIBANA_URL"],
             Environment.GetEnvironmentVariable("KIBANA_API_ACCESS_KEY") ?? configuration["KIBANA_API_ACCESS_KEY"]
         ));
-        services.AddSingleton<CoreContext>();
+        services.AddSingleton<DbContext>();
         services.AddTransient<IUseCaseQueryService, UseCaseQueryService>();
         return services;
     }

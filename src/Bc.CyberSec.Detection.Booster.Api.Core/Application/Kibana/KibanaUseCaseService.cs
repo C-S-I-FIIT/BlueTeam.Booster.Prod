@@ -31,7 +31,7 @@ public class KibanaUseCaseService: IKibanaUseCaseService
     {
         return useCases.Select(useCase => new UseCaseDto
         {
-            RuleId = useCase!.RuleId!.Value,
+            RuleId = useCase!.KibanaRuleId,
         }).ToList();
     }
 
