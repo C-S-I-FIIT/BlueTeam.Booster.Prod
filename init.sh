@@ -1,9 +1,7 @@
 #!/bin/bash
 
-current_dir=$(pwd)
+cd /home/mmakay/blueteam-boobster/BlueTeam.Booster.Prod/src/Bc.CyberSec.Detection.Booster.Api
+docker compose up -d --build
 
-cd src/Bc.CyberSec.Detection.Booster.Api
-docker compose up -d --build 
-
-cd $current_dir/syslog-ng/src
+cd /home/mmakay/blueteam-boobster/BlueTeam.Booster.Prod/syslog-ng/src
 ./monitor-script.sh &
