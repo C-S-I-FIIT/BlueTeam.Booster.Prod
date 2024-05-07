@@ -17,4 +17,10 @@
     <ProjectReference Include="../Bc.CyberSec.Detection.Booster.Api.Core\Bc.CyberSec.Detection.Booster.Api.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="uc-filters-definition.conf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
