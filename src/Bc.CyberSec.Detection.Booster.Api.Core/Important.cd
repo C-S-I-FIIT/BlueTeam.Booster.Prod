@@ -25,7 +25,7 @@
   <Class Name="Bc.CyberSec.Detection.Booster.Api.Core.Data.DocumentRepository&lt;T&gt;">
     <Position X="1.25" Y="5.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>CAAAAAAAAAAAQAAAAAAAAAAAAAAAAAgAAAAAAAAAQIA=</HashCode>
+      <HashCode>CAAAAAAAAAAAQAAAAAAAAAAAAAAAAAgAAAAAAAAEQIA=</HashCode>
       <FileName>Data\DocumentRepository.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />

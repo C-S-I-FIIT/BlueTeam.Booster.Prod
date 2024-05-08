@@ -2,37 +2,49 @@
 
 public interface IUseCaseWithNextMatch
 {
-    public IUseCaseWithNextMatch WithNextMatchCondition(List<string> mnemonic);
+    public IUseCaseWithNextMatch WithCiscoNextMatchCondition(List<string> mnemonic);
     public string Build();
 }
 
 public interface IUseCaseWithFirstMatch
 {
-    public IUseCaseWithNextMatch WithFirstMatchCondition(List<string> mnemonic);
+    public IUseCaseWithNextMatch WithCiscoFilterFirstMatchCondition(List<string> mnemonic);
 }
 
 public interface IUseCaseWithNetmaskDefinition
 {
-    IUseCaseWithFirstMatch WithNetmaskDefinition();
+    IUseCaseWithFirstMatch WithCiscoFilterNetmaskDefinition();
+}
+
+public interface IUseCaseWithCiscoFilterDefinition
+{
+    IUseCaseWithNetmaskDefinition WithCiscoFilterDefinition();
+}
+
+public interface IUseCaseWithFortigateFilterDefinition
+{
+    IUseCaseWithCiscoFilterDefinition WithFortigateFilterDefinition();
 }
 
 public interface IUseCaseToFilterBuilder
 {
-    public IUseCaseWithNetmaskDefinition WithFilterDefinition();
+    public IUseCaseWithFortigateFilterDefinition Start();
 }
 
 
-public class UseCaseToFilterBuilder : IUseCaseWithFirstMatch, IUseCaseWithNextMatch, IUseCaseToFilterBuilder, IUseCaseWithNetmaskDefinition
+public class UseCaseToFilterBuilder : IUseCaseWithFirstMatch, IUseCaseWithNextMatch, IUseCaseToFilterBuilder, IUseCaseWithNetmaskDefinition, IUseCaseWithCiscoFilterDefinition, IUseCaseWithFortigateFilterDefinition
 {
     private List<string> CiscoDevIps;
+    private string FortigateIp;
     private string _filterConfiguration = "";
 
-    public UseCaseToFilterBuilder(List<string> ciscoDevIps)
+    public UseCaseToFilterBuilder(List<string> ciscoDevIps, string fortigateIp)
     {
         CiscoDevIps = ciscoDevIps;
+        FortigateIp = fortigateIp;
     }
 
-    public IUseCaseWithNextMatch WithFirstMatchCondition(List<string> mnemonic)
+    public IUseCaseWithNextMatch WithCiscoFilterFirstMatchCondition(List<string> mnemonic)
     {
         for (int i = 0; i < mnemonic.Count; i++)
         {
@@ -41,7 +53,7 @@ public class UseCaseToFilterBuilder : IUseCaseWithFirstMatch, IUseCaseWithNextMa
         return this;
     }
 
-    public IUseCaseWithNextMatch WithNextMatchCondition(List<string> mnemonics)
+    public IUseCaseWithNextMatch WithCiscoNextMatchCondition(List<string> mnemonics)
     {
         foreach (var mnemonic in mnemonics)
             _filterConfiguration += $" or match(\"{mnemonic}\" value(\"MESSAGE\"))";
@@ -49,7 +61,17 @@ public class UseCaseToFilterBuilder : IUseCaseWithFirstMatch, IUseCaseWithNextMa
         return this;
     }
 
-    public IUseCaseWithFirstMatch WithNetmaskDefinition()
+    public string Build()
+    {
+        return _filterConfiguration + ";\n};\n";
+    }
+
+    public IUseCaseWithFortigateFilterDefinition Start()
+    {
+        return this;
+    }
+
+    public IUseCaseWithFirstMatch WithCiscoFilterNetmaskDefinition()
     {
         for (int i = 0; i < CiscoDevIps.Count; i++)
         {
@@ -71,14 +93,17 @@ public class UseCaseToFilterBuilder : IUseCaseWithFirstMatch, IUseCaseWithNextMa
         return this;
     }
 
-    public IUseCaseWithNetmaskDefinition WithFilterDefinition()
+    public IUseCaseWithNetmaskDefinition WithCiscoFilterDefinition()
     {
-        _filterConfiguration = "filter f_uc_combined {\n";
+        _filterConfiguration += "filter f_uc_cisco {\n";
         return this;
     }
 
-    public string Build()
+    public IUseCaseWithCiscoFilterDefinition WithFortigateFilterDefinition()
     {
-        return _filterConfiguration + ";\n};\n";
+        _filterConfiguration = "filter f_uc_fortigate {\n";
+        _filterConfiguration += $"netmask(\"{FortigateIp}\");";
+        _filterConfiguration += "\n};\n\n";
+        return this;
     }
 }

@@ -50,7 +50,8 @@ public static class DependencyExtension
         services.AddTransient<IUseCaseQueryService, UseCaseQueryService>();
         services.AddTransient<IUseCaseToFilterBuilder, UseCaseToFilterBuilder>(provider =>
                 new UseCaseToFilterBuilder(
-                    Environment.GetEnvironmentVariable("CISCO_DEVICE_IPS")!.Split(',').ToList() ?? configuration["CISCO_DEVICE_IPS"]!.Split(',').ToList()
+                    Environment.GetEnvironmentVariable("CISCO_DEVICE_IPS")!.Split(',').ToList() ?? configuration["CISCO_DEVICE_IPS"]!.Split(',').ToList(),
+                    Environment.GetEnvironmentVariable("FORTIGATE_IP") ?? configuration["FORTIGATE_IP"]
                 )
             );
         services.AddTransient<IUseCaseDecompose, UseCaseDecompose>();

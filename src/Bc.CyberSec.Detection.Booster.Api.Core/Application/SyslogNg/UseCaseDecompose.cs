@@ -18,13 +18,17 @@ public class UseCaseDecompose : IUseCaseDecompose
     
     public string ToFilter(List<UseCase> useCases)
     {
-        var tmp = FilterBuilder.WithFilterDefinition().WithNetmaskDefinition().WithFirstMatchCondition(useCases!.First().Mnemonics!);
+        var tmp = FilterBuilder.Start()
+            .WithFortigateFilterDefinition()
+            .WithCiscoFilterDefinition()
+            .WithCiscoFilterNetmaskDefinition()
+            .WithCiscoFilterFirstMatchCondition(useCases!.First().Mnemonics!);
 
         var tmpList = useCases.Skip(1).ToList();
 
         foreach (var useCase in tmpList)
         {
-            tmp = tmp.WithNextMatchCondition(useCase!.Mnemonics!);
+            tmp = tmp.WithCiscoNextMatchCondition(useCase!.Mnemonics!);
         }
 
         return tmp.Build();
