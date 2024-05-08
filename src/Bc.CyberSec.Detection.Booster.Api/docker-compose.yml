@@ -6,7 +6,6 @@ services:
       dockerfile: Bc.CyberSec.Detection.Booster.Api/Dockerfile
     environment:
       API_ACCESS_KEY: ${API_ACCESS_KEY}
-      SYSLOG_NG_CONFIG_DIR: ${SYSLOG_NG_CONFIG_DIR}
       SYSLOG_NG_CONFIG_FILE: ${SYSLOG_NG_CONFIG_FILE}
       KIBANA_URL: ${KIBANA_URL}
       KIBANA_API_ACCESS_KEY: ${KIBANA_API_ACCESS_KEY}
@@ -19,8 +18,8 @@ services:
     image: mongo:latest
     user: root
     environment:
-        MONGO_INITDB_ROOT_USERNAME: root
-        MONGO_INITDB_ROOT_PASSWORD: password
+        MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+        MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     volumes:
       - mongodb-data:/data/db
     ports: 
