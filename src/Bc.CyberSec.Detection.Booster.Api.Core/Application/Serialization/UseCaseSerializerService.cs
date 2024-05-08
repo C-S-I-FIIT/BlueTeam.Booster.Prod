@@ -52,7 +52,7 @@ public class UseCaseSerializerService : IUseCaseSerializerService
 
     public async Task Save(List<UseCase> useCases)
     {
-        await _context.UseCases.RemoveAllUseCase();
+        await _context.UseCases.RemoveCollection();
 
         foreach (var useCase in useCases)
         {

@@ -2,13 +2,23 @@
 
 namespace Bc.CyberSec.Detection.Booster.Api.Core.Application.SyslogNg;
 
-public class UseCaseDecompose
+public interface IUseCaseDecompose
 {
-    private IUseCaseToFilterBuilder FilterBuilder => new UseCaseToFilterBuilder();
+    string ToFilter(List<UseCase> useCases);
+}
+
+public class UseCaseDecompose : IUseCaseDecompose
+{
+    private IUseCaseToFilterBuilder FilterBuilder;
+
+    public UseCaseDecompose(IUseCaseToFilterBuilder filterBuilder)
+    {
+        FilterBuilder = filterBuilder;
+    }
     
     public string ToFilter(List<UseCase> useCases)
     {
-        var tmp = FilterBuilder.WithFilterDefinition().WithFirstMatchCondition(useCases!.First().Mnemonics!);
+        var tmp = FilterBuilder.WithFilterDefinition().WithNetmaskDefinition().WithFirstMatchCondition(useCases!.First().Mnemonics!);
 
         var tmpList = useCases.Skip(1).ToList();
 

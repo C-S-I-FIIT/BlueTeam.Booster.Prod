@@ -9,7 +9,7 @@ public interface IDocumentRepository<T> where T : CollectionRoot
     Task<T?> LoadByIdIfExistAsync(string id);
     Task UpdateAsync(T document);
     Task DeleteAsync(string id);
-    Task RemoveAllUseCase();
+    Task RemoveCollection();
 }
 
 public class DocumentRepository<T> : IDocumentRepository<T> where T : CollectionRoot
@@ -42,7 +42,7 @@ public class DocumentRepository<T> : IDocumentRepository<T> where T : Collection
         await Collection.DeleteOneAsync( x => x.UseCaseIdentitifier.Equals(id));
     }
 
-    public async Task RemoveAllUseCase()
+    public async Task RemoveCollection()
     {
         await Collection.DeleteManyAsync(x => true);
     }

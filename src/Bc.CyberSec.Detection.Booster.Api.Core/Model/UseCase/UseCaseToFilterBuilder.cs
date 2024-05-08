@@ -11,15 +11,26 @@ public interface IUseCaseWithFirstMatch
     public IUseCaseWithNextMatch WithFirstMatchCondition(List<string> mnemonic);
 }
 
+public interface IUseCaseWithNetmaskDefinition
+{
+    IUseCaseWithFirstMatch WithNetmaskDefinition();
+}
+
 public interface IUseCaseToFilterBuilder
 {
-    public IUseCaseWithFirstMatch WithFilterDefinition();
+    public IUseCaseWithNetmaskDefinition WithFilterDefinition();
 }
 
 
-public class UseCaseToFilterBuilder : IUseCaseWithFirstMatch, IUseCaseWithNextMatch, IUseCaseToFilterBuilder
+public class UseCaseToFilterBuilder : IUseCaseWithFirstMatch, IUseCaseWithNextMatch, IUseCaseToFilterBuilder, IUseCaseWithNetmaskDefinition
 {
+    private List<string> CiscoDevIps;
     private string _filterConfiguration = "";
+
+    public UseCaseToFilterBuilder(List<string> ciscoDevIps)
+    {
+        CiscoDevIps = ciscoDevIps;
+    }
 
     public IUseCaseWithNextMatch WithFirstMatchCondition(List<string> mnemonic)
     {
@@ -38,14 +49,36 @@ public class UseCaseToFilterBuilder : IUseCaseWithFirstMatch, IUseCaseWithNextMa
         return this;
     }
 
-    public string Build()
+    public IUseCaseWithFirstMatch WithNetmaskDefinition()
     {
-        return _filterConfiguration + ";\n};\n";
+        for (int i = 0; i < CiscoDevIps.Count; i++)
+        {
+            if (i == CiscoDevIps.Count - 1)
+            {
+                if (i == 0)
+                {
+                    _filterConfiguration += $"netmask(\"{CiscoDevIps[i]}\");\n";
+                }
+                else
+                {
+                    _filterConfiguration += $"or netmask(\"{CiscoDevIps[i]}\");\n";
+                }
+                break;
+            }
+
+            _filterConfiguration += i == 0 ? $"netmask(\"{CiscoDevIps[i]}\")\n" : $" or netmask(\"{CiscoDevIps[i]}\")";
+        }
+        return this;
     }
 
-    public IUseCaseWithFirstMatch WithFilterDefinition()
+    public IUseCaseWithNetmaskDefinition WithFilterDefinition()
     {
         _filterConfiguration = "filter f_uc_combined {\n";
         return this;
+    }
+
+    public string Build()
+    {
+        return _filterConfiguration + ";\n};\n";
     }
 }

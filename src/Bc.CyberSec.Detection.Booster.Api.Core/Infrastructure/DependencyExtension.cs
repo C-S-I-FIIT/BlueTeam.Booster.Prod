@@ -3,6 +3,7 @@ using Bc.CyberSec.Detection.Booster.Api.Core.Application.Serialization;
 using Bc.CyberSec.Detection.Booster.Api.Core.Application.SyslogNg;
 using Bc.CyberSec.Detection.Booster.Api.Core.Application;
 using Bc.CyberSec.Detection.Booster.Api.Core.Data;
+using Bc.CyberSec.Detection.Booster.Api.Core.Model.UseCase;
 using Bc.SyslogNgHa_Kibana.Api.Client.Api;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,11 +38,7 @@ public static class DependencyExtension
     {
         services.AddSingleton<IUseCaseSerializerService, UseCaseSerializerService>();
 
-        services.AddSingleton<ISyslogNgUseCaseService>(x => new SyslogNgUseCaseService(
-            x.GetService<IUseCaseSerializerService>(),
-            Environment.GetEnvironmentVariable("SYSLOG_NG_CONFIG_FILE") ??
-            configuration["SYSLOG_NG_CONFIG_FILE"]
-        ));
+        
         services.AddTransient<IUseCaseHandlerService, UseCaseHandlerService>();
         services.AddTransient<IKibanaUseCaseService, KibanaUseCaseService>();
 
@@ -51,6 +48,20 @@ public static class DependencyExtension
         ));
         services.AddSingleton<DbContext>();
         services.AddTransient<IUseCaseQueryService, UseCaseQueryService>();
+        services.AddTransient<IUseCaseToFilterBuilder, UseCaseToFilterBuilder>(provider =>
+                new UseCaseToFilterBuilder(
+                    Environment.GetEnvironmentVariable("CISCO_DEVICE_IPS")!.Split(',').ToList() ?? configuration["CISCO_DEVICE_IPS"]!.Split(',').ToList()
+                )
+            );
+        services.AddTransient<IUseCaseDecompose, UseCaseDecompose>();
+
+        services.AddSingleton<ISyslogNgUseCaseService>(x => new SyslogNgUseCaseService(
+            x.GetService<IUseCaseSerializerService>(),
+            Environment.GetEnvironmentVariable("SYSLOG_NG_CONFIG_FILE") ??
+            configuration["SYSLOG_NG_CONFIG_FILE"],
+            x.GetService<IUseCaseDecompose>()!
+        ));
+
         return services;
     }
 }

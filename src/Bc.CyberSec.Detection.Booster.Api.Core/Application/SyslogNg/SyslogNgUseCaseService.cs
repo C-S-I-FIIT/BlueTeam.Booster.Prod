@@ -11,13 +11,14 @@ public interface ISyslogNgUseCaseService
 public class SyslogNgUseCaseService: ISyslogNgUseCaseService
 {
     private readonly IUseCaseSerializerService _useCaseSerializerService;
-    private readonly UseCaseDecompose _useCaseDecompose = new();
+    private readonly IUseCaseDecompose _useCaseDecompose;
 
     private readonly string _syslogNgConfigFile;
-    public SyslogNgUseCaseService(IUseCaseSerializerService? useCaseSerializerService, string? syslogNgConfigFile)
+    public SyslogNgUseCaseService(IUseCaseSerializerService? useCaseSerializerService, string? syslogNgConfigFile, IUseCaseDecompose useCaseDecompose)
     {
         _useCaseSerializerService = useCaseSerializerService;
         _syslogNgConfigFile = syslogNgConfigFile;
+        _useCaseDecompose = useCaseDecompose;
         if (_syslogNgConfigFile == null)
             throw new ArgumentNullException("Provide syslog ng file document");
     }
