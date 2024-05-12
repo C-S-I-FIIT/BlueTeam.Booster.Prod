@@ -3,6 +3,7 @@ using Bc.CyberSec.Detection.Booster.Api.Core.Data;
 using Bc.CyberSec.Detection.Booster.Api.Core.Dto;
 using Bc.CyberSec.Detection.Booster.Api.Core.Model.UseCase;
 using Bc.CyberSec.Detection.Booster.Api.Core.QueryService;
+using Bc.SyslogNgHa_Kibana.Api.Client.Api;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Bc.CyberSec.Detection.Booster.Api.Core.Application.Serialization;
@@ -23,12 +24,14 @@ public class UseCaseSerializerService : IUseCaseSerializerService
     private readonly string _cacheWhenKey = "cached";
     private readonly IMemoryCache _cache;
     private readonly IUseCaseQueryService _queryService;
+    private readonly IKibanaApi _kibanaApi;
 
-    public UseCaseSerializerService(IMemoryCache cache, DbContext context, IUseCaseQueryService queryService)
+    public UseCaseSerializerService(IMemoryCache cache, DbContext context, IUseCaseQueryService queryService, IKibanaApi kibanaApi)
     {
         _cache = cache;
         _context = context;
         _queryService = queryService;
+        _kibanaApi = kibanaApi;
     }
 
     public async Task<List<UseCase>> GetUseCases()
@@ -52,6 +55,8 @@ public class UseCaseSerializerService : IUseCaseSerializerService
 
     public async Task Save(List<UseCase> useCases)
     {
+        var uc = await _context.UseCases.GetAll();
+        DisableKibanaRules(uc);
         await _context.UseCases.RemoveCollection();
 
         foreach (var useCase in useCases)
@@ -80,6 +85,14 @@ public class UseCaseSerializerService : IUseCaseSerializerService
     {
         var when = _cache.Get<DateTime>(_cacheWhenKey);
         return when;
+    }
+
+    private void DisableKibanaRules(List<UseCase> uc)
+    {
+        foreach (var useCase in uc)
+        {
+            _kibanaApi.DeactivateRule(useCase.KibanaRuleId);
+        }
     }
 
     private List<UseCase> MapToUseCase(List<UseCaseCreateDto> useCasesDto)

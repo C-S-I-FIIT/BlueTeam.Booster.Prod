@@ -37,10 +37,8 @@ public static class DependencyExtension
     public static IServiceCollection AddDetectionBoosterCore(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IUseCaseSerializerService, UseCaseSerializerService>();
-
-        
-        services.AddTransient<IUseCaseHandlerService, UseCaseHandlerService>();
         services.AddTransient<IKibanaUseCaseService, KibanaUseCaseService>();
+        services.AddTransient<IUseCaseHandlerService, UseCaseHandlerService>();
 
         services.AddSingleton<IKibanaApi, KibanaApi>(provider => new KibanaApi(
             Environment.GetEnvironmentVariable("KIBANA_URL") ?? configuration["KIBANA_URL"],

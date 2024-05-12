@@ -13,6 +13,7 @@ public interface IKibanaApi
     void CreateUseCase(List<UseCaseDto> useCases);
     void ActivateUseCase(Guid id);
     void DeactivateUseCase(Guid id);
+    void DeactivateRule(Guid id);
 }
 public class KibanaApi: BasicApi, IKibanaApi
 {
@@ -56,5 +57,10 @@ public class KibanaApi: BasicApi, IKibanaApi
     public void DeactivateUseCase(Guid id)
     {
        SendRequest("_disable", id);
+    }
+
+    public void DeactivateRule(Guid id)
+    {
+        SendRequest("_disable", id);
     }
 }

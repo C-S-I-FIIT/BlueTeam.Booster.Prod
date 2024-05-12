@@ -7,7 +7,7 @@ public class UseCaseGetDto
     [JsonPropertyName("mnemonics")]
     public List<string>? Mnemonics { get; set; }
 
-    [JsonPropertyName("ruleId")]
+    [JsonPropertyName("kibanaRuleId")]
     public Guid? KibanaRuleId { get; set; }
 
     [JsonPropertyName("id")]

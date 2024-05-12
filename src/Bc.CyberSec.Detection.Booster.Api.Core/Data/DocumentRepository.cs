@@ -10,6 +10,7 @@ public interface IDocumentRepository<T> where T : CollectionRoot
     Task UpdateAsync(T document);
     Task DeleteAsync(string id);
     Task RemoveCollection();
+    Task<List<T>> GetAll();
 }
 
 public class DocumentRepository<T> : IDocumentRepository<T> where T : CollectionRoot
@@ -45,5 +46,10 @@ public class DocumentRepository<T> : IDocumentRepository<T> where T : Collection
     public async Task RemoveCollection()
     {
         await Collection.DeleteManyAsync(x => true);
+    }
+
+    public async Task<List<T>> GetAll()
+    {
+        return await Collection.Find(x => true).ToListAsync();
     }
 }

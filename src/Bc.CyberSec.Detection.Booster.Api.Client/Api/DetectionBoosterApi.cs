@@ -7,8 +7,8 @@ namespace Bc.CyberSec.Detection.Booster.Api.Client.Api;
 
 public interface IDetectionBoosterApi
 {
-    void ActivateUseCase(List<string> identifiers);
-    void DeactivateUseCase(List<string> identifiers);
+    void ActivateUseCase(List<int> identifiers);
+    void DeactivateUseCase(List<int> identifiers);
     HttpStatusCode CreateUseCases(List<UseCaseCreateDto> useCases);
     List<UseCaseGetDto> GetActiveUseCases();
     List<UseCaseGetDto> GetInactiveUseCases();
@@ -27,6 +27,7 @@ public class DetectionBoosterApi: BasicApi, IDetectionBoosterApi
             options =>
             {
                 options.RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
+                options.FollowRedirects = true;
             },
             headers =>
             {
@@ -36,25 +37,24 @@ public class DetectionBoosterApi: BasicApi, IDetectionBoosterApi
         _apiUrl = apiUrl;
     }
 
-    public void ActivateUseCase(List<string> identifiers)
+    public void ActivateUseCase(List<int> identifiers)
     {
 
         foreach (var identifier in identifiers)
         {
-            var request = new RestRequest("/uc/activate", Method.Put);
-            request.AddParameter("id", identifier);
+            var request = new RestRequest($"/api/uc/activate/{identifier}", Method.Put);
             var response = _client.Execute(request);
             if (!response.IsSuccessStatusCode)
                 throw new ApplicationException(
-                    $"Používateľský prípad s identifikátorom {identifier} sa nepodarilo aktivovať");
+                    $"Používateľský prípad s identifikátorom UC{identifier} sa nepodarilo aktivovať");
         }
     }
 
-    public void DeactivateUseCase(List<string> identifiers)
+    public void DeactivateUseCase(List<int> identifiers)
     {
         foreach (var identifier in identifiers)
         {
-            var request = new RestRequest("/uc/deactivate", Method.Put);
+            var request = new RestRequest($"/api/uc/deactivate/{identifier}", Method.Put);
             request.AddParameter("id", identifier);
             var response = _client.Execute(request);
             if (!response.IsSuccessStatusCode)
@@ -65,7 +65,7 @@ public class DetectionBoosterApi: BasicApi, IDetectionBoosterApi
 
     public HttpStatusCode CreateUseCases(List<UseCaseCreateDto> useCases)
     {
-        var request = new RestRequest("/uc/save", Method.Post);
+        var request = new RestRequest("/api/uc/save", Method.Post);
         request.AddJsonBody(useCases);
 
         var response = _client.Execute(request);
@@ -74,7 +74,7 @@ public class DetectionBoosterApi: BasicApi, IDetectionBoosterApi
 
     public List<UseCaseGetDto> GetActiveUseCases()
     {
-        var request = new RestRequest("/uc/active");
+        var request = new RestRequest("/api/uc/active");
         var response = _client.Execute(request);
 
         if (response.IsSuccessStatusCode)
@@ -85,7 +85,7 @@ public class DetectionBoosterApi: BasicApi, IDetectionBoosterApi
 
     public List<UseCaseGetDto> GetInactiveUseCases()
     {
-        var request = new RestRequest("/uc/inactive");
+        var request = new RestRequest("/api/uc/inactive");
         var response = _client.Execute(request);
 
         if (response.IsSuccessStatusCode)
@@ -96,7 +96,7 @@ public class DetectionBoosterApi: BasicApi, IDetectionBoosterApi
 
     public DateTime? GetWhenSerialized()
     {
-        var request = new RestRequest("/uc/save");
+        var request = new RestRequest("/api/uc/save");
         var response = _client.Execute(request);
         if (response.IsSuccessStatusCode)
             return JsonSerializer.Deserialize<DateTime>(response.Content);
@@ -106,7 +106,7 @@ public class DetectionBoosterApi: BasicApi, IDetectionBoosterApi
 
     public List<UseCaseGetDto> GetAllUseCases()
     {
-        var request = new RestRequest("/uc/all");
+        var request = new RestRequest("/api/uc/all");
         var response = _client.Execute(request);
         if (response.IsSuccessStatusCode)
             return JsonSerializer.Deserialize<List<UseCaseGetDto>>(response.Content);
