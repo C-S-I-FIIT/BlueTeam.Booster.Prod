@@ -34,7 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapPut("/uc/activate/{id}", (int id, IUseCaseHandlerService useCaseHandlerService) =>
+app.MapPut("/api/uc/activate/{id}", (int id, IUseCaseHandlerService useCaseHandlerService) =>
 {
     try
     {
@@ -50,7 +50,7 @@ app.MapPut("/uc/activate/{id}", (int id, IUseCaseHandlerService useCaseHandlerSe
 .WithOpenApi()
 .RequireAuthorization();
 
-app.MapPut("/uc/deactivate/{id}", (int id, IUseCaseHandlerService useCaseHandlerService) =>
+app.MapPut("/api/uc/deactivate/{id}", (int id, IUseCaseHandlerService useCaseHandlerService) =>
 {
     try
     {
@@ -67,9 +67,8 @@ app.MapPut("/uc/deactivate/{id}", (int id, IUseCaseHandlerService useCaseHandler
 .WithOpenApi()
 .RequireAuthorization();
 
-app.MapPost("/uc/save", async (List<UseCaseCreateDto> useCases, IUseCaseSerializerService useCaseSerializerService) =>
+app.MapPost("/api/uc/save", async (List<UseCaseCreateDto> useCases, IUseCaseSerializerService useCaseSerializerService) =>
 {
-    
     if (useCases.Count == 0)
         return Results.BadRequest("No use cases provided");
 
@@ -87,7 +86,7 @@ app.MapPost("/uc/save", async (List<UseCaseCreateDto> useCases, IUseCaseSerializ
 .WithOpenApi()
 .RequireAuthorization();
 
-app.MapGet("/uc/active", async (IUseCaseSerializerService useCaseSerializerService) =>
+app.MapGet("/api/uc/active", async (IUseCaseSerializerService useCaseSerializerService) =>
 {
     try
     {
@@ -100,7 +99,7 @@ app.MapGet("/uc/active", async (IUseCaseSerializerService useCaseSerializerServi
 })
 .WithName("GetActive");
 
-app.MapGet("/uc/inactive", async (IUseCaseSerializerService useCaseSerializerService) =>
+app.MapGet("/api/uc/inactive", async (IUseCaseSerializerService useCaseSerializerService) =>
 {
     try
     {
@@ -113,7 +112,7 @@ app.MapGet("/uc/inactive", async (IUseCaseSerializerService useCaseSerializerSer
 })
 .WithName("GetInActive");
 
-app.MapGet("/uc/save", (IUseCaseSerializerService useCaseSerializerService) =>
+app.MapGet("/api/uc/save", (IUseCaseSerializerService useCaseSerializerService) =>
 {
     try
     {
@@ -126,7 +125,7 @@ app.MapGet("/uc/save", (IUseCaseSerializerService useCaseSerializerService) =>
 })
 .WithName("GetSerialization");
 
-app.MapGet("/uc/all", async (IUseCaseSerializerService useCaseSerializerService) =>
+app.MapGet("/api/uc/all", async (IUseCaseSerializerService useCaseSerializerService) =>
     {
         try
         {
