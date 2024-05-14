@@ -68,10 +68,10 @@ First, ensure that the software packages inotifywait and syslog-ng are installed
 git clone git@github.com:MatusMakay/BlueTeam.Booster.Prod.git
 ```
 ### Configuring Syslog-ng
-Navigate to the BlueTeam.Booster.Prod/syslog-ng directory. You need to configure the filter-cisco-devices.conf file to match your specific network parameters:
+Navigate to the BlueTeam.Booster.Prod/syslog-ng/conf directory. You need to configure the filter-cisco-devices.conf file to match your specific network parameters:
 
 ``` shell
-cd BlueTeam.Booster.Prod/syslog-ng
+cd BlueTeam.Booster.Prod/syslog-ng/conf
 vi filter-cisco-devices.conf
 
 source s_dev { 
@@ -111,9 +111,8 @@ MONGO_USERNAME=username
 MONGO_PASSWORD=Password
 ``` 
 
-After creating the .env file, you can run the Docker containers. The Docker Compose file is located in the same directory as the environment variables. Navigate to that directory and run the following command:
-
+After creating the .env file, you can run application with `init.sh` script which is located in `BlueTeam.Booster.Prod`
 ``` shell
-docker-compose up -d --build
+sudo ./init.sh
 ```
 Ensure that your firewall allows logs to be sent from devices to our application. You should also ensure that our application is allowed to communicate as needed.
